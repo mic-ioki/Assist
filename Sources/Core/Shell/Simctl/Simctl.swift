@@ -102,7 +102,8 @@ public extension Simctl {
                      platform: String,
                      deviceIds: [String],
                      outUrl: URL,
-                     zipFileName: String) throws {
+                     zipFileName: String,
+                     multipleRuntimeUIStyles: Bool) throws {
 
         let fileManager = FileManager.default
 
@@ -153,7 +154,7 @@ public extension Simctl {
                 Logger.shared.info("Extracting screenshots from xcresult bundle '\(resultsBundleUrl.path())' for scheme '\(scheme)' and style '\(style)'", inset: 1)
 
                 try fileManager.createDirectory(at: screensUrl, withIntermediateDirectories: true, attributes: nil)
-                try Mint.screenshots(resultsBundleURL: resultsBundleUrl, screensURL: screensUrl)
+                try Mint.screenshots(resultsBundleURL: resultsBundleUrl, screensURL: screensUrl, multipleRuntimeUIStyles: multipleRuntimeUIStyles)
             }
         }
 

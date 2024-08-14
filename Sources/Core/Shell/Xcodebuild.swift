@@ -23,9 +23,9 @@ public struct Xcodebuild {
         let invocations: [Invocation]
 
         switch subcommand {
-        case let .buildForTesting(workspace, schemes):
+        case let .buildForTesting(workspace, schemes, envVariables):
             invocations = schemes.map {
-                Invocation(arguments: commonArgs + ["-workspace", workspace, "-scheme", $0])
+                Invocation(arguments: commonArgs + ["-workspace", workspace, "-scheme", $0] + envVariables)
             }
 
         case let .testWithoutBuilding(xcTestRunFile, resultsBundleURL, testPlanConfigs):
@@ -45,7 +45,7 @@ public struct Xcodebuild {
     // MARK: - Subcommand
 
     public enum Subcommand {
-        case buildForTesting(workspace: String, schemes: [String])
+        case buildForTesting(workspace: String, schemes: [String], envVariables: [String] = [])
         case testWithoutBuilding(xcTestRunFile: URL, resultsBundleURL: URL? = nil, testPlanConfigs: [String] = [])
 
         var name: String {

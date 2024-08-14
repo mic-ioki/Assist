@@ -78,6 +78,12 @@ public final class Snap: ParsableCommand {
     @Option(help: "An optional runtime to be used. Omit to use the latest.")
     var runtime: String?
 
+    @Option(name: [.customLong("env-vars")], help: "Inject environment variable into test")
+    var envVariables: [String] = []
+
+    @Flag(help: "Flag that will split the screenshots into their own UI style.")
+    var multipleRuntimeUIStyles: Bool = false
+
     public init() {
         
     }
@@ -129,6 +135,7 @@ public final class Snap: ParsableCommand {
                     schemes: \(ListFormatter.localizedString(byJoining: schemes))
                     test plan: \(testPlanName) (\(testPlanConfigs.isEmpty ? "all configs" : ListFormatter.localizedString(byJoining: testPlanConfigs)))
                     destination: \(outURL.path.appendPathComponent(zipFileName))
+                    envVariables: \(envVariables.joined(separator: " "))
                 """
             Logger.shared.info(configMessage)
 
@@ -143,7 +150,7 @@ public final class Snap: ParsableCommand {
             Logger.shared.info("Device IDs Found: \(deviceIds)")
 
             Logger.shared.info("Building all requested schemes for testing")
-            try Xcodebuild.execute(subcommand: .buildForTesting(workspace: workspace, schemes: schemes),
+            try Xcodebuild.execute(subcommand: .buildForTesting(workspace: workspace, schemes: schemes, envVariables: envVariables),
                                    deviceIds: deviceIds,
                                    derivedDataUrl: derivedDataUrl)
 
@@ -159,7 +166,8 @@ public final class Snap: ParsableCommand {
                             platform: "iphonesimulator", // we're always generating on a simulator
                             deviceIds: deviceIds,
                             outUrl: outURL,
-                            zipFileName: zipFileName)
+                            zipFileName: zipFileName,
+                            multipleRuntimeUIStyles: multipleRuntimeUIStyles)
 
             Logger.shared.info("Find your screens in \(outURL.path)")
 
